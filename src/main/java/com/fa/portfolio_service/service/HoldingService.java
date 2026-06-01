@@ -1,4 +1,10 @@
 package com.fa.portfolio_service.service;
 
-public class HoldingService {
+import java.math.BigDecimal;
+
+public interface HoldingService {
+
+    void updateMarketPrice(Long portfolioId,
+                           String symbol,
+                           BigDecimal marketPrice);
 }
