@@ -1,7 +1,9 @@
 package com.fa.portfolio_service.service;
 
 import com.fa.portfolio_service.entity.Holding;
+import com.fa.portfolio_service.entity.Portfolio;
 import com.fa.portfolio_service.repository.HoldingRepository;
+import com.fa.portfolio_service.repository.PortfolioRepository;
 import com.fin.commo_event_lib.events.TradeExecutedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class HoldingServiceImpl implements  HoldingService {
     private final HoldingRepository holdingRepository;
+    private final PortfolioRepository portfolioRepository;
     private final PnLService pnlService;
 
     @Override
@@ -21,7 +24,7 @@ public class HoldingServiceImpl implements  HoldingService {
                                   BigDecimal marketPrice) {
 
         Holding holding = holdingRepository
-                .findByPortfolioIdAndSymbol(portfolioId, symbol)
+                .findByPortfolioPortfolioIdAndSymbol(portfolioId, symbol)
                 .orElse(null);
 
         if (holding == null) return;
@@ -35,16 +38,19 @@ public class HoldingServiceImpl implements  HoldingService {
 
     public void processTrade(TradeExecutedEvent event) {
 
-        Holding h = holdingRepository.findByPortfolioIdAndSymbol(
+        Holding h = holdingRepository.findByPortfolioPortfolioIdAndSymbol(
                 event.getPortfolioId(),
                 event.getSymbol()
-        ).orElse(Holding.builder()
-                .id(event.getPortfolioId())
-                .symbol(event.getSymbol())
-                .quantity(0L)
-                .averagePrice(BigDecimal.ZERO)
-                .pnl(BigDecimal.ZERO)
-                .build());
+        ).orElseGet(() -> {
+            Portfolio p = portfolioRepository.getReferenceById(event.getPortfolioId());
+            return Holding.builder()
+                    .symbol(event.getSymbol())
+                    .quantity(0L)
+                    .averagePrice(BigDecimal.ZERO)
+                    .pnl(BigDecimal.ZERO)
+                    .portfolio(p)
+                    .build();
+        });
 
         if ("BUY".equals(event.getSide())) {
             buy(h, event.getQuantity(), event.getExecutionPrice());
@@ -52,7 +58,7 @@ public class HoldingServiceImpl implements  HoldingService {
             sell(h, event.getQuantity());
         }
 
-      pnlService.calculatePnL(h,event.getExecutionPrice());
+        pnlService.calculatePnL(h,event.getExecutionPrice());
         holdingRepository.save(h);
     }
 
@@ -74,20 +80,23 @@ public class HoldingServiceImpl implements  HoldingService {
         h.setQuantity(h.getQuantity() - qty);
     }
 
-
+// duplicate method
     public void updateHolding(Long portfolioId,
                               String symbol,
                               Long quantity,
                               BigDecimal price) {
 
         Holding holding = holdingRepository
-                .findByPortfolioIdAndSymbol(portfolioId, symbol)
-                .orElse(Holding.builder()
-                        .id(portfolioId)
-                        .symbol(symbol)
-                        .quantity(0L)
-                        .averagePrice(BigDecimal.ZERO)
-                        .build());
+                .findByPortfolioPortfolioIdAndSymbol(portfolioId, symbol)
+                .orElseGet(() -> {
+                    Portfolio p = portfolioRepository.getReferenceById(portfolioId);
+                    return Holding.builder()
+                            .symbol(symbol)
+                            .quantity(0L)
+                            .averagePrice(BigDecimal.ZERO)
+                            .portfolio(p)
+                            .build();
+                });
 
         long newQty = holding.getQuantity() + quantity;
 

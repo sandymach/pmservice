@@ -15,6 +15,7 @@ public class TradeExecutedConsumer {
 
     @KafkaListener(topics = "trade-executed", groupId = "portfolio-group")
     public void consume(TradeExecutedEvent event) {
+        holdingService.processTrade(event);
 
         holdingService.updateHolding( event.getPortfolioId(),
                 event.getSymbol(),

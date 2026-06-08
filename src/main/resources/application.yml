@@ -4,14 +4,14 @@ spring:
   application:
     name: portfolio-service
   datasource:
-    url: jdbc:mysql://localhost:3306/Fin_DB
+    url: jdbc:mysql://fin-db.co38skkai16i.us-east-1.rds.amazonaws.com:3306/Fin_DB
     username: root
-    password:
+    password: Sandy*994
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
   flyway:
     enabled: true

@@ -23,6 +23,8 @@ public class PortfolioServiceImpl implements PortfolioService {
         Portfolio portfolio = Portfolio.builder()
                 .clientId(clientId)
                 .totalValue(java.math.BigDecimal.ZERO)
+                .cashBalance(java.math.BigDecimal.ZERO)
+                .currency("USD")
                 .build();
 
         return portfolioRepository.save(portfolio);
@@ -31,7 +33,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public void processBuyOrder(Long clientId, BuyOrderRequest request) {
 
-        Portfolio portfolio = portfolioRepository.findByClientId(clientId)
+        Portfolio portfolio = portfolioRepository.findFirstByClientId(clientId)
                 .orElseThrow(() -> new RuntimeException("Portfolio not found"));
 
         TradeRequestEvent event = TradeRequestEvent.builder()
