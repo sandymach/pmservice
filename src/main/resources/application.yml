@@ -3,11 +3,11 @@ server:
 spring:
   application:
     name: portfolio-service
-  datasource:
-    url: jdbc:mysql://fin-db.co38skkai16i.us-east-1.rds.amazonaws.com:3306/Fin_DB
-    username: root
-    password: Sandy*994
-    driver-class-name: com.mysql.cj.jdbc.Driver
+# # datasource:
+#    url: jdbc:mysql://database-1.c7me8euy81hb.eu-north-1.rds.amazonaws.com:3306/finadvdb
+#    username: admin
+#    password: Sandy*994
+#    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
