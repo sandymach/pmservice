@@ -3,7 +3,7 @@ server:
 spring:
   application:
     name: portfolio-service
-# # datasource:
+#  datasource:
 #    url: jdbc:mysql://database-1.c7me8euy81hb.eu-north-1.rds.amazonaws.com:3306/finadvdb
 #    username: admin
 #    password: Sandy*994
@@ -62,3 +62,8 @@ spring:
         trade-request: trade-requests
         trade-executed: trade-executed
         trade-failed: trade-failed
+
+aws:
+  s3:
+    document-bucket: advisor-client-documents
+    preview-bucket: advisor-document-previews
