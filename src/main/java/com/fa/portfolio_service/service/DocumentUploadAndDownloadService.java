@@ -1,12 +1,13 @@
 package com.fa.portfolio_service.service;
 
-import com.fa.portfolio_service.aws.s3.S3Config;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
@@ -14,14 +15,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
-public class DocumentUploadService {
+public class DocumentUploadAndDownloadService {
 
     private S3Client s3Client;
 
     @Value("${aws.s3.document-bucket}")
     private String documentBucket;
 
-    public DocumentUploadService(S3Client s3Client) {
+    public DocumentUploadAndDownloadService(S3Client s3Client) {
         this.s3Client = s3Client;
     }
 
@@ -57,5 +58,18 @@ public class DocumentUploadService {
     private String generateKey(String clientId,String originalFileName){
         String timeStamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         return  "clients/" + clientId + "/documents/" + timeStamp + "-" + originalFileName;
+    }
+
+    public byte[] downloadFile(String bucketName, String fileKey) {
+
+        ResponseBytes<GetObjectResponse> objectBytes =
+                s3Client.getObjectAsBytes(
+                        GetObjectRequest.builder()
+                                .bucket(bucketName)
+                                .key(fileKey)
+                                .build()
+                );
+
+        return objectBytes.asByteArray();
     }
 }
