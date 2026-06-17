@@ -1,4 +1,4 @@
-Portfolio Service
+## ✨ Portfolio Service
 
 Lightweight Spring Boot service for uploading and downloading client documents (S3-backed).
 
