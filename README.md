@@ -2,7 +2,7 @@
 
 Lightweight Spring Boot service for uploading and downloading client documents (S3-backed).
 
-Features
+**Features
 
 Upload documents for a client (returns S3 key)
 
@@ -16,7 +16,7 @@ Persistence using AWS RDS (MySQL) for portfolio and related data
 
 Built with Spring Boot and AWS SDK v2 (S3)
 
-Prerequisites
+**Prerequisites
 
 Java 22
 
@@ -28,7 +28,7 @@ Access to a Kafka broker (bootstrap servers) for messaging
 
 An AWS RDS instance (MySQL) and credentials for the application's datasource
 
-Build & Run
+**Build & Run
 
 From the project root:
 
@@ -36,9 +36,9 @@ Build:mvn clean package
 
 Run:mvn spring-bootorjava -jar target/portfolio-service-0.0.1-SNAPSHOT.jar
 
-Endpoints
+**Endpoints
 
-Document endpoints
+*Document endpoints
 
 POST /documents/upload
 
@@ -62,7 +62,7 @@ Response: raw file bytes with an attachment Content-Disposition header
 
 Example:curl -v "http://localhost:8080/documents/download?bucket=my-bucket&key=path/to/object"
 
-Portfolio controller
+*Portfolio controller
 
 Provides endpoints to create a portfolio for a client and submit BUY orders to the trade service.
 
@@ -90,11 +90,11 @@ Response: 200 OK, body: "BUY order sent to Trade Service"
 
 Example:curl -X POST -H "Content-Type: application/json" -d '{"symbol":"AAPL","quantity":10,"price":150.50}' http://localhost:8080/portfolio/123/buy
 
-Notes:
+## Notes:
 
 Buy orders are forwarded to the configured Trade Service via the PortfolioService. Ensure trade service connectivity and necessary configuration are provided.
 
-Configuration
+##Configuration
 
 Typical Spring configuration lives in src/main/resources/application.yml or application.properties. Provide the following configurations as needed:
 
@@ -108,7 +108,7 @@ Secrets: AWS Secrets Manager may be used to store DB credentials (secretsmanager
 
 Ensure network access (VPC, security groups) between the app, RDS, and Kafka broker when running in cloud environments.
 
-Notes
+##Notes
 
 The controller uses an internal DocumentUploadAndDownloadService which interacts with S3 (S3 key returned on upload).
 
@@ -124,4 +124,4 @@ Development
 
 Tests: mvn test
 
-OpenAPI UI: springdoc is included (access /swagger-ui.html or /swagger-ui/index.html when running)
+## OpenAPI UI: springdoc is included (access /swagger-ui.html or /swagger-ui/index.html when running)
