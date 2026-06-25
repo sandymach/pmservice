@@ -44,7 +44,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .price(request.getPrice())
                 .side("BUY")
                 .build();
-
+        System.out.println("Tade request sent "+event);
         producer.send(event);
     }
 }

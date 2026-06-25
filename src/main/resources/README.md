@@ -60,3 +60,15 @@ WHERE user IN ('admin','iam_user_1','app_user');
 CREATE USER 'app_user'@'%' IDENTIFIED WITH AWSAuthenticationPlugin AS 'RDS';
 GRANT ALL PRIVILEGES ON finadvdb.* TO 'app_user'@'%';
 FLUSH PRIVILEGES;
+
+
+docker compose -f docker-compose-kafka.yml down -v
+docker compose -f docker-compose-connect.yml down -v
+docker compose -f docker-compose-kafka.yml up -d
+docker compose -f docker-compose-connect.yml up -d
+docker exec -it portfolio-kafka /opt/kafka/bin/kafka-topics.sh \
+--bootstrap-server localhost:9092 \
+--list
+
+docker logs portfolio-kafka --tail 100   
+docker ps -a
